@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { Contact } from './entities/contact.entity';
+import { BulkAction } from './entities/bulk-action.entity';
+import { BulkActionLog } from './entities/bulk-action-log.entity';
 import { Company } from './entities/company.entity';
+import { Contact } from './entities/contact.entity';
 import { Lead } from './entities/lead.entity';
 import { Opportunity } from './entities/opportunity.entity';
-import { Task } from './entities/task.entity';
 
 @Module({
   imports: [
@@ -19,8 +20,16 @@ import { Task } from './entities/task.entity';
         username: configService.get<string>('DB_USERNAME'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [Contact, Company, Lead, Opportunity, Task],
+        entities: [
+          Contact,
+          Company,
+          Lead,
+          Opportunity,
+          BulkAction,
+          BulkActionLog,
+        ],
         synchronize: true, //TODO: remove
+        logging: true, //TODO: remove
       }),
       inject: [ConfigService],
     }),

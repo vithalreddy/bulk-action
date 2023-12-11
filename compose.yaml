@@ -11,7 +11,7 @@ services:
         source: postgres_data
         target: /var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:5432"
 
   redis:
     image: redis:alpine
@@ -22,8 +22,24 @@ services:
         source: redis_data
         target: /data
     ports:
-      - "6379:6379"
+      - "${REDIS_PORT}:6379"
+
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: rabbitmq
+    ports:
+      - "${RABBITMQ_PORT}:5672" # RabbitMQ server
+      - "15672:15672" # Management console
+    environment:
+      RABBITMQ_DEFAULT_USER: ${RABBITMQ_USER}
+      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASS}
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    restart: always
+
 
 volumes:
   postgres_data:
   redis_data:
+  rabbitmq_data:
+
