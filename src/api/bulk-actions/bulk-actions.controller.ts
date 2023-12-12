@@ -62,13 +62,20 @@ export class BulkActionsController {
   @ApiOperation({ summary: 'Get logs related to a bulk action' })
   @ApiQuery({ name: 'page', type: Number, example: 1 })
   @ApiQuery({ name: 'limit', type: Number, example: 25 })
+  @ApiQuery({ name: 'search', type: String, required: false })
   @ApiParam({ name: 'actionId', type: 'number' })
   @ApiResponse({ status: 200, description: 'Logs related to the bulk action' })
   async getBulkActionLogs(
     @Param('actionId') actionId: number,
     @Query('page') page: number,
     @Query('limit') limit: number,
+    @Query('search') search?: string,
   ) {
-    return this.bulkActionsService.getBulkActionLogs(actionId, page, limit);
+    return this.bulkActionsService.getBulkActionLogs(
+      actionId,
+      page,
+      limit,
+      search,
+    );
   }
 }

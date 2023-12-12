@@ -91,13 +91,24 @@ export class BulkActionsService {
     actionId: number,
     page: number = 1,
     limit: number = 10,
+    search?: string,
   ) {
-    const [results, total] = await this.logRepository.findAndCount({
-      where: { bulkActionId: actionId },
-      skip: (page - 1) * limit,
-      take: limit,
-      order: { id: 'DESC' },
-    });
+    const queryBuilder = this.logRepository
+      .createQueryBuilder('log')
+      .where('log.bulkActionId = :actionId', { actionId })
+      .orderBy('log.id', 'DESC')
+      .skip((page - 1) * limit)
+      .take(limit);
+
+    if (search) {
+      queryBuilder.andWhere(
+        `to_tsvector('english', log.logText) @@ plainto_tsquery('english', :search)`,
+        { search },
+      );
+    }
+
+    const [results, total] = await queryBuilder.getManyAndCount();
+
     return {
       data: results,
       total,
