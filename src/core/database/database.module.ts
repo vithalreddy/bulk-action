@@ -29,7 +29,7 @@ import { Opportunity } from './entities/opportunity.entity';
           BulkActionLog,
         ],
         synchronize: true, //TODO: remove
-        logging: true, //TODO: remove
+        // logging: true, //TODO: remove
       }),
       inject: [ConfigService],
     }),

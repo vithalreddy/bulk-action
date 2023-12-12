@@ -7,6 +7,7 @@ import { BulkActionLog } from '../core/database/entities/bulk-action-log.entity'
 import { RabbitMQModule } from '../core/rabbitmq/rabbitmq.module';
 import { BulkUpdateBatchWorkerService } from './bulk-update-batch-worker.service';
 import { BulkUpdateWorkerService } from './bulk-update-worker.service';
+import { StatsBatchProcessor } from './stats-updater';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { BulkUpdateWorkerService } from './bulk-update-worker.service';
     BulkUpdateWorkerService,
     BulkUpdateBatchWorkerService,
     BulkActionLogService,
+    StatsBatchProcessor,
   ],
 })
 export class WorkersModule {}

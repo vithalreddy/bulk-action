@@ -81,6 +81,8 @@ export class BulkActionsService {
 
     return {
       status: bulkAction.status,
+      totalRecords: bulkAction.totalRecords,
+      processedRecords: bulkAction.processedRecords,
       successCount: bulkAction.successCount,
       failureCount: bulkAction.failureCount,
       skippedCount: bulkAction.skippedCount,

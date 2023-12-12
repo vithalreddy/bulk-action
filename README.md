@@ -41,6 +41,7 @@ The API documentation is generated using Swagger and can be accessed at /api whe
 
 ### Endpoints Include:
 - GET /bulk-actions: List all bulk actions with pagination which has all the data related to bulk action status, stats and progress.
+- POST /bulk-actions: create an bulk action.
 - GET /bulk-actions/{actionId}: Retrieve the status of a specific bulk action.
 - GET /bulk-actions/{actionId}/stats: Get statistics of a specific bulk action, it get's updated in near real-time.
 - GET /bulk-actions/{actionId}/logs: Fetch logs related to a specific bulk action and can filter logs.

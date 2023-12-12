@@ -13,6 +13,7 @@ import {
   RABBITMQ_EXCHANGES,
   RABBITMQ_QUEUES,
 } from '../core/rabbitmq/rabbitmq.constants';
+import { StatsBatchProcessor } from './stats-updater';
 import { WORKER_BATCH_UPDATE_SIZE } from './worker.constants';
 
 @Injectable()
@@ -21,6 +22,7 @@ export class BulkUpdateBatchWorkerService {
     @InjectRepository(BulkAction)
     private bulkActionRepository: Repository<BulkAction>,
     private readonly bulkActionLogService: BulkActionLogService,
+    private statsBatchProcessor: StatsBatchProcessor,
   ) {}
 
   @RabbitSubscribe({
@@ -196,17 +198,24 @@ export class BulkUpdateBatchWorkerService {
     try {
       const processedRecords = updated + failed + skipped;
 
-      await this.bulkActionRepository
-        .createQueryBuilder()
-        .update(BulkAction)
-        .set({
-          successCount: () => `successCount + ${updated}`,
-          failureCount: () => `failureCount + ${failed}`,
-          skippedCount: () => `skippedCount + ${skipped}`,
-          processedRecords: () => `processedRecords + ${processedRecords}`,
-        })
-        .where('id = :id', { id: row.id })
-        .execute();
+      this.statsBatchProcessor.addToBatch(row.id, {
+        updated,
+        failed,
+        skipped,
+        processedRecords,
+      });
+
+      // await this.bulkActionRepository
+      //   .createQueryBuilder()
+      //   .update(BulkAction)
+      //   .set({
+      //     successCount: () => `successCount + ${updated}`,
+      //     failureCount: () => `failureCount + ${failed}`,
+      //     skippedCount: () => `skippedCount + ${skipped}`,
+      //     processedRecords: () => `processedRecords + ${processedRecords}`,
+      //   })
+      //   .where('id = :id', { id: row.id })
+      //   .execute();
     } catch (error) {
       await this.bulkActionLogService.createLog(
         row.id,
